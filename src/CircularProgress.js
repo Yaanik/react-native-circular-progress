@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Animated, View } from 'react-native';
-import { Svg, Path, G } from 'react-native-svg';
+import {Svg, Path, G, LinearGradient, Defs, Stop} from 'react-native-svg';
 
 export default class CircularProgress extends React.PureComponent {
   polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -41,7 +41,13 @@ export default class CircularProgress extends React.PureComponent {
       padding,
       renderCap,
       dashedBackground,
-      dashedTint
+      dashedTint,
+            gradientStart,
+        gradientEnd,
+        x1,
+        x2,
+        y1,
+        y2
     } = this.props;
 
     const maxWidthCircle = backgroundWidth ? Math.max(width, backgroundWidth) : width;
@@ -101,6 +107,12 @@ export default class CircularProgress extends React.PureComponent {
     return (
       <View style={style}>
         <Svg width={size + padding} height={size + padding}>
+          <Defs>
+            <LinearGradient id="grad" x1={x1} y1={y1} x2={x2} y2={y2}>
+              <Stop offset="0" stopColor={gradientStart} stopOpacity="1" />
+              <Stop offset="1" stopColor={gradientEnd} stopOpacity="1" />
+            </LinearGradient>
+          </Defs>
           <G rotation={rotation} originX={(size + padding) / 2} originY={(size + padding) / 2}>
             {backgroundColor && (
               <Path
@@ -115,7 +127,7 @@ export default class CircularProgress extends React.PureComponent {
             {fill > 0 && (
               <Path
                 d={circlePath}
-                stroke={tintColor}
+                stroke='url(#grad)'
                 strokeWidth={width}
                 strokeLinecap={fillLineCap}
                 strokeDasharray={strokeDasharrayTint}
